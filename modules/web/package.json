@@ -1,0 +1,18 @@
+{
+  "name": "dyn-forms",
+  "version": "0.0.0",
+  "description": "Form renderer",
+  "main": "index.js",
+  "scripts": {
+    "start": "http-server -p 8000"
+  },
+  "author": "Suman Ganta",
+  "license": "BSD-2-Clause",
+  "devDependencies": {
+    "http-server": "~0.6.1",
+    "grunt": "~0.4.5",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-uglify": "~0.5.0",
+    "grunt-contrib-jshint": "~0.10.0"
+  }
+}

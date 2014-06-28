@@ -1,0 +1,21 @@
+<html ng-app="dyn-forms">
+	<head>
+		<title>Sample form demo</title>
+		<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/dyn-style.css">
+	</head>
+	<body ng-controller="dynFormCtrl">
+		<dynamic-form class="col-md-10" template="myFormTemplate" ng-model="formData" ng-submit="submitForm()">
+			<legend>Person Details</legend>
+    	</dynamic-form>
+    	<div class="col-md-2">
+	        <div class="fixed col-md-4">
+	            <pre>formData: {{formData | pretty}}</pre>
+	        </div>
+        </div>
+		<!-- Load scripts at the end for performance. -->
+	    <script src="bower_components/angular/angular.min.js"></script>
+	    <script src="js/angular-dynamic-forms/dynamic-forms.js"></script>
+	    <script src="js/dyn-forms-controller.js"></script>
+    </body>
+</html>
