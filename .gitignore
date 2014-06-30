@@ -1,0 +1,15 @@
+target/
+*~
+dist/
+nbproject/
+## Intellij IDEA
+.idea/
+*.iml
+*/target/classes
+*/generated
+*/.m2
+*/dist
+*.ipr
+.DS_Store
+## Redis datastore
+*.rdb
