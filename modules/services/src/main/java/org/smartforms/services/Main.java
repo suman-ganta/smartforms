@@ -4,6 +4,8 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
+import org.glassfish.jersey.jackson.JacksonFeature;
+
 import java.io.IOException;
 import java.net.URI;
 
@@ -24,7 +26,7 @@ public class Main {
         // in org.smartforms package
         //final ResourceConfig rc = new ResourceConfig().packages(Main.class.getPackage().getName());
         final ResourceConfig rc = new ResourceConfig().registerClasses(DataDefinitionResource.class,
-                DataInstanceResource.class, BasicAuthFilter.class);
+                DataInstanceResource.class, BasicAuthFilter.class, JacksonFeature.class);
 
         // create and start a new instance of grizzly http server
         // exposing the Jersey application at BASE_URI

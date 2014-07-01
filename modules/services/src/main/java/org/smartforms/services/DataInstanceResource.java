@@ -15,19 +15,24 @@ import java.util.Map;
 /**
  * REST endpoint for data instance lookup
  */
-@Path("instances")
+@Path("/instances")
 public class DataInstanceResource {
 
     @Context
     protected SecurityContext securityContext;
 
+    /**
+     * Return data instance details of a given instanceId
+     * @param diId
+     * @return
+     */
     @Path("{instanceId}")
     @GET
     public Response getDataInstance(@PathParam("instanceId") String diId){
-        Map<String, String> dataInstance = jedis().hgetAll("di." + diId + ".details");
+        Map<String, String> dataInstance = jedis().hgetAll(PUtil.dataInstanceDetailsKey(diId));
         if(dataInstance != null) {
             DataInstance di = new DataInstance(dataInstance);
-            if (jedis().sismember("user." + getUserId() + ".datasets", di.getDatasetId())) {
+            if (jedis().sismember(PUtil.userDataSetsKey(getUserId()), di.getDsId())) {
                 return Response.ok(di, MediaType.APPLICATION_JSON).build();
             }else {
                 return Response.status(Response.Status.FORBIDDEN).entity("Given dataInstance is not accessible").build();
