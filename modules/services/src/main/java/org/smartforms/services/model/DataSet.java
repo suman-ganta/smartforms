@@ -10,6 +10,16 @@ public class DataSet {
     private String id;
     private String name;
     private String description;
+    private String dataFieldsJson;
+
+    public String getDataFieldsJson() {
+        return dataFieldsJson;
+    }
+
+    public DataSet setDataFieldsJson(String dataFieldsJson) {
+        this.dataFieldsJson = dataFieldsJson;
+        return this;
+    }
 
     public String getId() {
         return id;
@@ -38,21 +48,23 @@ public class DataSet {
         return this;
     }
 
-    public DataSet(Map dsAsMap) {
-        this.id = (String)dsAsMap.get("id");
-        this.name = (String)dsAsMap.get("name");
-        this.description = (String)dsAsMap.get("description");
+    public DataSet(Map<String, String> dsAsMap) {
+        this.id = dsAsMap.get("id");
+        this.name = dsAsMap.get("name");
+        this.description = dsAsMap.get("description");
+        this.dataFieldsJson = dsAsMap.get("dataFieldsJson");
     }
 
     public DataSet(){
 
     }
 
-    public Map toMap() {
-        Map map = new HashMap();
+    public Map<String, String> toMap() {
+        Map<String, String> map = new HashMap();
         map.put("id", id);
         map.put("name", name);
         map.put("description", description);
+        map.put("dataFieldsJson", dataFieldsJson);
         return map;
     }
 }
