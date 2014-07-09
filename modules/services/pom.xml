@@ -84,7 +84,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>org.smartforms.services.Main</mainClass>
+                    <mainClass>org.smartforms.services.EmbeddedServer</mainClass>
                 </configuration>
             </plugin>
         </plugins>

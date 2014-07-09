@@ -1,6 +1,7 @@
 package org.smartforms.services;
 
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.grizzly.http.server.StaticHttpHandler;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -10,12 +11,12 @@ import java.io.IOException;
 import java.net.URI;
 
 /**
- * Main class.
+ * Embedded http server.
  *
  */
-public class Main {
+public class EmbeddedServer {
     // Base URI the Grizzly HTTP server will listen on
-    public static final String BASE_URI = "http://localhost:9085/myapp/";
+    public static final String REST_BASE_URI = "http://localhost:9085/rest/";
 
     /**
      * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
@@ -29,8 +30,12 @@ public class Main {
                 DataInstanceResource.class, BasicAuthFilter.class, JacksonFeature.class);
 
         // create and start a new instance of grizzly http server
-        // exposing the Jersey application at BASE_URI
-        return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
+        // exposing the Jersey application at REST_BASE_URI
+        HttpServer httpServer = GrizzlyHttpServerFactory.createHttpServer(URI.create(REST_BASE_URI), rc);
+
+        //create static file handler to serve html app
+        httpServer.getServerConfiguration().addHttpHandler(new StaticHttpHandler("../web/app"), "/sf");
+        return httpServer;
     }
 
     /**
@@ -41,7 +46,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         final HttpServer server = startServer();
         System.out.println(String.format("Jersey app started with WADL available at "
-                + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
+                + "%sapplication.wadl\nHit enter to stop it...", REST_BASE_URI));
         System.in.read();
         server.stop();
     }

@@ -1,7 +1,7 @@
 target/
 *~
 dist/
-nbproject/
+
 ## Intellij IDEA
 .idea/
 *.iml
@@ -11,5 +11,12 @@ nbproject/
 */dist
 *.ipr
 .DS_Store
+
 ## Redis datastore
 *.rdb
+
+## node modules
+modules/web/node_modules
+
+## bower components
+modules/web/app/bower_components

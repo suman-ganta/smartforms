@@ -1,0 +1,10 @@
+<div>
+    <dynamic-form class="col-md-10" template="viewDefTemplate" ng-model="formData" ng-submit="submitForm()">
+        <legend>Person Details</legend>
+    </dynamic-form>
+    <div class="col-md-2">
+        <div class="fixed col-md-4">
+            <pre>formData: {{formData | pretty}}</pre>
+        </div>
+    </div>
+</div>

@@ -30,7 +30,7 @@ public class DataDefinitionResourceTest {
     @Before
     public void setUp() throws Exception {
         // start the server
-        server = Main.startServer();
+        server = EmbeddedServer.startServer();
         // create the client
         Client c = ClientBuilder.newClient();
 
@@ -38,7 +38,7 @@ public class DataDefinitionResourceTest {
         c.register(authFeature);
         c.register(new JacksonFeature());
 
-        target = c.target(Main.BASE_URI);
+        target = c.target(EmbeddedServer.REST_BASE_URI);
 
         setupData();
     }
@@ -66,51 +66,51 @@ public class DataDefinitionResourceTest {
         jedis.sadd(PUtil.userDataSetsKey(VALID_USER), "ds10", "ds11", "ds12");
 
         //populate view definitions
-        jedis.hmset(PUtil.viewDetailsKey("vd10"), new ViewDef().setDsId("ds10").setId("vd10").setTitle("MyView10").setViewDefJson("[\n" +
-                "{\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}},\n" +
-                "{\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}},\n" +
-                "{\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}}\n" +
-                "]").toMap());
-        jedis.hmset(PUtil.viewDetailsKey("vd11"), new ViewDef().setDsId("ds10").setId("vd11").setTitle("MyView11").setViewDefJson("[\n" +
-                "{\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}},\n" +
-                "{\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}},\n" +
-                "{\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}}\n" +
-                "]").toMap());
-        jedis.hmset(PUtil.viewDetailsKey("vd12"), new ViewDef().setDsId("ds10").setId("vd12").setTitle("MyView12").setViewDefJson("[\n" +
-                "{\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}},\n" +
-                "{\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}},\n" +
-                "{\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}}\n" +
-                "]").toMap());
-        jedis.hmset(PUtil.viewDetailsKey("vd13"), new ViewDef().setDsId("ds11").setId("vd13").setTitle("MyView13").setViewDefJson("[\n" +
-                "{\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}},\n" +
-                "{\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}},\n" +
-                "{\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}}\n" +
-                "]").toMap());
-        jedis.hmset(PUtil.viewDetailsKey("vd14"), new ViewDef().setDsId("ds11").setId("vd14").setTitle("MyView14").setViewDefJson("[\n" +
-                "{\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}},\n" +
-                "{\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}},\n" +
-                "{\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}}\n" +
-                "]").toMap());
-        jedis.hmset(PUtil.viewDetailsKey("vd15"), new ViewDef().setDsId("ds11").setId("vd15").setTitle("MyView15").setViewDefJson("[\n" +
-                "{\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}},\n" +
-                "{\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}},\n" +
-                "{\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}}\n" +
-                "]").toMap());
-        jedis.hmset(PUtil.viewDetailsKey("vd16"), new ViewDef().setDsId("ds12").setId("vd16").setTitle("MyView16").setViewDefJson("[\n" +
-                "{\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}},\n" +
-                "{\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}},\n" +
-                "{\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}}\n" +
-                "]").toMap());
-        jedis.hmset(PUtil.viewDetailsKey("vd17"), new ViewDef().setDsId("ds12").setId("vd17").setTitle("MyView17").setViewDefJson("[\n" +
-                "{\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}},\n" +
-                "{\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}},\n" +
-                "{\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}}\n" +
-                "]").toMap());
-        jedis.hmset(PUtil.viewDetailsKey("vd18"), new ViewDef().setDsId("ds12").setId("vd18").setTitle("MyView18").setViewDefJson("[\n" +
-                "{\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}},\n" +
-                "{\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}},\n" +
-                "{\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}}\n" +
-                "]").toMap());
+        jedis.hmset(PUtil.viewDetailsKey("vd10"), new ViewDef().setDsId("ds10").setId("vd10").setTitle("MyView10").setViewDefJson("{\n" +
+                "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
+                "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
+                "\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
+                "}").toMap());
+        jedis.hmset(PUtil.viewDetailsKey("vd11"), new ViewDef().setDsId("ds10").setId("vd11").setTitle("MyView11").setViewDefJson("{\n" +
+                "\"firstName\" : {\"label\" : \"First Name\", \"type\" : \"text\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
+                "\"lastName\" : {\"label\" : \"Last Name\", \"type\" : \"text\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
+                "\"marks\" : {\"label\" : \"Marks\", \"type\" : \"text\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
+                "}").toMap());
+        jedis.hmset(PUtil.viewDetailsKey("vd12"), new ViewDef().setDsId("ds10").setId("vd12").setTitle("MyView12").setViewDefJson("{\n" +
+                "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
+                "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
+                "\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
+                "}").toMap());
+        jedis.hmset(PUtil.viewDetailsKey("vd13"), new ViewDef().setDsId("ds11").setId("vd13").setTitle("MyView13").setViewDefJson("{\n" +
+                "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
+                "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
+                "\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
+                "}").toMap());
+        jedis.hmset(PUtil.viewDetailsKey("vd14"), new ViewDef().setDsId("ds11").setId("vd14").setTitle("MyView14").setViewDefJson("{\n" +
+                "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
+                "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
+                "\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
+                "}").toMap());
+        jedis.hmset(PUtil.viewDetailsKey("vd15"), new ViewDef().setDsId("ds11").setId("vd15").setTitle("MyView15").setViewDefJson("{\n" +
+                "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
+                "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
+                "\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
+                "}").toMap());
+        jedis.hmset(PUtil.viewDetailsKey("vd16"), new ViewDef().setDsId("ds12").setId("vd16").setTitle("MyView16").setViewDefJson("{\n" +
+                "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
+                "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
+                "\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
+                "}").toMap());
+        jedis.hmset(PUtil.viewDetailsKey("vd17"), new ViewDef().setDsId("ds12").setId("vd17").setTitle("MyView17").setViewDefJson("{\n" +
+                "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
+                "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
+                "\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
+                "}").toMap());
+        jedis.hmset(PUtil.viewDetailsKey("vd18"), new ViewDef().setDsId("ds12").setId("vd18").setTitle("MyView18").setViewDefJson("{\n" +
+                "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
+                "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
+                "\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
+                "}").toMap());
 
         //associate views to datasets
         jedis.sadd(PUtil.dataSetViewsKey("ds10"), "vd10", "vd11", "vd12");

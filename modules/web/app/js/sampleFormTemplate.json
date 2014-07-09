@@ -1,0 +1,35 @@
+{
+    "first": {
+        "type": "text",
+        "label": "First Name"
+    },
+    "last": {
+        "type": "text",
+        "label": "Last Name"
+    },
+    "address": {
+        "type": "text",
+        "label": "Address"
+    },
+    "dob": {
+        "type": "date",
+        "label": "Date of birth",
+        "placeholder": "person's DOB"
+      },
+    "image": {
+        "type": "image",
+        "label": "image",
+        "source": "http://angularjs.org/img/AngularJS-large.png"
+    },
+    "legend": {
+        "type": "legend",
+    },
+    "reset": {
+        "type": "reset",
+        "label": "Reset"
+    },
+    "submit": {
+        "type": "submit",
+        "label": "Send"
+    }
+};
