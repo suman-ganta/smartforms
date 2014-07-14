@@ -1,4 +1,4 @@
-Account (1) -> DataSet (n)
+User (1) -> DataSet (n)
 DataSet (1) -> ViewDef (n)
 
 ViewDef - JSON representing the form rendering
@@ -12,7 +12,7 @@ Account -> userid, password and other user details.
 Ex: Exam marks
 ==============
 
-Account -> ssc/ssc1
+user -> ssc/ssc1
 
 DataSet -> ds1, "10th marks", "10th marks of 2014 batch"
 
@@ -27,8 +27,14 @@ varRecord1 - hash map of key value pairs
 
 APIs
 ====
-1. All Datasets of an account
+1. All Datasets of a user
 RHASHes with names ACCT.AcctID
 2. All viewDefs of a dataset
 3. all dataRecords of a dataset
 4. View rendering - input - ViewDefId, dataRecord Id
+
+UI Views
+========
+End user - view1: embedded viewDef, view2: list of dataDefs, drill down into viewDef
+
+DataDef owner - End user + create view
