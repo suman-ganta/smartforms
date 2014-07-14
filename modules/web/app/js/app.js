@@ -1,40 +1,28 @@
 /*
 Top level module for the app
 */
-var smartFormsApp = angular.module('smartforms', ['viewDefRender', 'ngRoute']);
+var smartFormsApp = angular.module('smartforms', ['viewDefModule', 'datasetsModule', 'ngRoute']);
 
 smartFormsApp.config(['$routeProvider',
   function($routeProvider) {
     $routeProvider.
-      when('/viewdef', {
-        templateUrl: 'viewDefRenderer.html',
-        controller: 'viewDefRenderCtrl',
+      when('/home', {
+            templateUrl: 'home.html'
+          }).
+      when('/dataset/:datasetid', {
+            templateUrl: 'viewDefList.html',
+            controller: 'viewDefListCtrl'
+          }).
+      when('/viewdef/:viewdefid', {
+        templateUrl: 'viewDef.html',
+        controller: 'viewDefCtrl',
         resolve: {
-          'viewDefService':function(viewDefService){
-            // viewDefService will also be injectable in your controller,
-            //if you don't want this you could create a new promise with the $q service
-            return viewDefService.promise;
+          'viewDefService':function($http, $route){
+              return $http.get('/rest/datadefs/views/' + $route.current.params.viewdefid);
           }
         }
       }).
       otherwise({
-        redirectTo: '/viewdef'
+        redirectTo: '/home'
       });
   }]);
-
-smartFormsApp.service('viewDefService', ['$http', function($http){
-    var myData;
-    var promise = $http.get('/rest/datadefs/views/vd11').success(function(data) {
-            console.log('XHR returned!!');
-            myData = JSON.parse(data.viewDefJson);
-        });
-    return {
-      promise:promise,
-      setData: function (data) {
-          myData = data;
-      },
-      getData: function () {
-          return myData;
-      }
-    };
-}]);
