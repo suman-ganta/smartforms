@@ -19,6 +19,9 @@ smartFormsApp.config(['$routeProvider',
         resolve: {
           'viewDefService':function($http, $route){
               return $http.get('/rest/datadefs/views/' + $route.current.params.viewdefid);
+          },
+          'dataDefs':function($http, $route){
+            return $http.get('/rest/datadefs');
           }
         }
       }).

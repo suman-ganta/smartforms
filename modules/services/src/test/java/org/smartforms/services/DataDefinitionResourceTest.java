@@ -50,17 +50,17 @@ public class DataDefinitionResourceTest {
         Jedis jedis = new Jedis("localhost");
         //populate DataSets
         jedis.hmset(PUtil.dataSetDetailsKey("ds10"), new DataSet().setId("ds10").setName("test1").setDescription("test desc").
-                setDataFieldsJson("[{\"firstName\" : \"String\"}, {\"lastName\" : \"String\"}, {\"address\":\"String\"}, {\"totalMarks\" : \"number\"}]").toMap());
+                setDataFieldsJson("{\"firstName\" : \"text\", \"lastName\" : \"text\", \"address\":\"text\", \"totalMarks\" : \"number\"}").toMap());
         jedis.hmset(PUtil.dataSetDetailsKey("ds11"), new DataSet().setId("ds11").setName("test2").setDescription("test desc").
-                setDataFieldsJson("[{\"firstName\" : \"String\"}, {\"lastName\" : \"String\"}, {\"address\":\"String\"}, {\"totalMarks\" : \"number\"}]").toMap());
+                setDataFieldsJson("{\"firstName\" : \"text\", \"lastName\" : \"text\", \"address\":\"text\", \"totalMarks\" : \"number\"}").toMap());
         jedis.hmset(PUtil.dataSetDetailsKey("ds12"), new DataSet().setId("ds12").setName("test3").setDescription("test desc").
-                setDataFieldsJson("[{\"firstName\" : \"String\"}, {\"lastName\" : \"String\"}, {\"address\":\"String\"}, {\"totalMarks\" : \"number\"}]").toMap());
+                setDataFieldsJson("{\"firstName\" : \"text\", \"lastName\" : \"text\", \"address\":\"text\", \"totalMarks\" : \"number\"}").toMap());
         jedis.hmset(PUtil.dataSetDetailsKey("ds13"), new DataSet().setId("ds13").setName("test4").setDescription("test desc").
-                setDataFieldsJson("[{\"firstName\" : \"String\"}, {\"lastName\" : \"String\"}, {\"address\":\"String\"}, {\"totalMarks\" : \"number\"}]").toMap());
+                setDataFieldsJson("{\"firstName\" : \"text\", \"lastName\" : \"text\", \"address\":\"text\", \"totalMarks\" : \"number\"}").toMap());
         jedis.hmset(PUtil.dataSetDetailsKey("ds14"), new DataSet().setId("ds14").setName("test5").setDescription("test desc").
-                setDataFieldsJson("[{\"firstName\" : \"String\"}, {\"lastName\" : \"String\"}, {\"address\":\"String\"}, {\"totalMarks\" : \"number\"}]").toMap());
+                setDataFieldsJson("{\"firstName\" : \"text\", \"lastName\" : \"text\", \"address\":\"text\", \"totalMarks\" : \"number\"}").toMap());
         jedis.hmset(PUtil.dataSetDetailsKey("ds15"), new DataSet().setId("ds15").setName("test6").setDescription("test desc").
-                setDataFieldsJson("[{\"firstName\" : \"String\"}, {\"lastName\" : \"String\"}, {\"address\":\"String\"}, {\"totalMarks\" : \"number\"}]").toMap());
+                setDataFieldsJson("{\"firstName\" : \"text\", \"lastName\" : \"text\", \"address\":\"text\", \"totalMarks\" : \"number\"}").toMap());
 
         //associate datasets to users
         jedis.sadd(PUtil.userDataSetsKey(VALID_USER), "ds10", "ds11", "ds12");
@@ -69,47 +69,47 @@ public class DataDefinitionResourceTest {
         jedis.hmset(PUtil.viewDetailsKey("vd10"), new ViewDef().setDsId("ds10").setId("vd10").setTitle("MyView10").setViewDefJson("{\n" +
                 "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
-                "\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
+                "\"totalMarks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
                 "}").toMap());
         jedis.hmset(PUtil.viewDetailsKey("vd11"), new ViewDef().setDsId("ds10").setId("vd11").setTitle("MyView11").setViewDefJson("{\n" +
-                "\"firstName\" : {\"label\" : \"First Name\", \"type\" : \"text\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
-                "\"lastName\" : {\"label\" : \"Last Name\", \"type\" : \"text\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
-                "\"marks\" : {\"label\" : \"Marks\", \"type\" : \"text\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
+                "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
+                "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
+                "\"totalMarks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
                 "}").toMap());
         jedis.hmset(PUtil.viewDetailsKey("vd12"), new ViewDef().setDsId("ds10").setId("vd12").setTitle("MyView12").setViewDefJson("{\n" +
                 "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
-                "\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
+                "\"totalMarks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
                 "}").toMap());
         jedis.hmset(PUtil.viewDetailsKey("vd13"), new ViewDef().setDsId("ds11").setId("vd13").setTitle("MyView13").setViewDefJson("{\n" +
                 "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
-                "\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
+                "\"totalMarks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
                 "}").toMap());
         jedis.hmset(PUtil.viewDetailsKey("vd14"), new ViewDef().setDsId("ds11").setId("vd14").setTitle("MyView14").setViewDefJson("{\n" +
                 "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
-                "\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
+                "\"totalMarks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
                 "}").toMap());
         jedis.hmset(PUtil.viewDetailsKey("vd15"), new ViewDef().setDsId("ds11").setId("vd15").setTitle("MyView15").setViewDefJson("{\n" +
                 "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
-                "\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
+                "\"totalMarks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
                 "}").toMap());
         jedis.hmset(PUtil.viewDetailsKey("vd16"), new ViewDef().setDsId("ds12").setId("vd16").setTitle("MyView16").setViewDefJson("{\n" +
                 "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
-                "\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
+                "\"totalMarks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
                 "}").toMap());
         jedis.hmset(PUtil.viewDetailsKey("vd17"), new ViewDef().setDsId("ds12").setId("vd17").setTitle("MyView17").setViewDefJson("{\n" +
                 "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
-                "\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
+                "\"totalMarks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
                 "}").toMap());
         jedis.hmset(PUtil.viewDetailsKey("vd18"), new ViewDef().setDsId("ds12").setId("vd18").setTitle("MyView18").setViewDefJson("{\n" +
                 "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
-                "\"marks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
+                "\"totalMarks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
                 "}").toMap());
 
         //associate views to datasets
