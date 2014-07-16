@@ -1,4 +1,4 @@
-var datasetsModule = angular.module('datasetsModule', []);
+var datasetsModule = angular.module('sfDatasets', []);
 
 datasetsModule.controller('dataSetsCtrl', ['$scope', '$http', function($scope, $http){
      console.log('dataSetsCtrl executed');
