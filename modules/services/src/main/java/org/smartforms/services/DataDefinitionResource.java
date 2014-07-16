@@ -52,6 +52,25 @@ public class DataDefinitionResource {
     }
 
     /**
+     * Lookup data sets for the user
+     * @return
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("view/{viewId}")
+    public Response getDataDefintionByViewId(@PathParam("viewId") String viewId) {
+        Set<String> datasetIds = jedis().smembers(PUtil.userDataSetsKey(getUserId()));
+        for (String datasetId : datasetIds) {
+            Set<String> viewDefIds = jedis().smembers(PUtil.dataSetViewsKey(datasetId));
+            if (viewDefIds.contains(viewId)) {
+                Map<String, String> dsDetails = jedis().hgetAll(PUtil.dataSetDetailsKey(datasetId));
+                return Response.ok(new DataSet(dsDetails), MediaType.APPLICATION_JSON).build();
+            }
+        }
+        return Response.status(Response.Status.NOT_FOUND).entity("No dataset definitions found for given viewId").build();
+    }
+
+    /**
      * Lookup view defintions for a given data set and user
      * @param dataSetId
      * @return

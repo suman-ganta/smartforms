@@ -67,7 +67,7 @@ public class DataDefinitionResourceTest {
 
         //populate view definitions
         jedis.hmset(PUtil.viewDetailsKey("vd10"), new ViewDef().setDsId("ds10").setId("vd10").setTitle("MyView10").setViewDefJson("{\n" +
-                "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
+                "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : true, \"visible\" : true},\n" +
                 "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"totalMarks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
                 "}").toMap());
@@ -119,23 +119,23 @@ public class DataDefinitionResourceTest {
 
         //populate data instances
         jedis.hmset(PUtil.dataInstanceDetailsKey("di1"), new DataInstance().setId("di1").setDsId("ds10").
-                setDataAsJson("{\"firstName\" : \"Suman\", \"lastName\" : \"Ganta\", \"address\":\"1200 E Hillsdale\", \"marks\" : 485}").toMap());
+                setDataAsJson("{\"firstName\" : \"Suman\", \"lastName\" : \"Ganta\", \"address\":\"1200 E Hillsdale\", \"totalMarks\" : 485}").toMap());
         jedis.hmset(PUtil.dataInstanceDetailsKey("di2"), new DataInstance().setId("di2").setDsId("ds10").
-                setDataAsJson("{\"firstName\" : \"Shanti\", \"lastName\" : \"Sree\", \"address\":\"1200 E Hillsdale\", \"marks\" : 480}").toMap());
+                setDataAsJson("{\"firstName\" : \"Shanti\", \"lastName\" : \"Sree\", \"address\":\"1200 E Hillsdale\", \"totalMarks\" : 480}").toMap());
         jedis.hmset(PUtil.dataInstanceDetailsKey("di3"), new DataInstance().setId("di3").setDsId("ds10").
-                setDataAsJson("{\"firstName\" : \"Suman\", \"lastName\" : \"Ganta\", \"address\":\"1200 E Hillsdale\", \"marks\" : 485}").toMap());
+                setDataAsJson("{\"firstName\" : \"Suman\", \"lastName\" : \"Ganta\", \"address\":\"1200 E Hillsdale\", \"totalMarks\" : 485}").toMap());
         jedis.hmset(PUtil.dataInstanceDetailsKey("di4"), new DataInstance().setId("di4").setDsId("ds10").
-                setDataAsJson("{\"firstName\" : \"Shanti\", \"lastName\" : \"Sree\", \"address\":\"1200 E Hillsdale\", \"marks\" : 480}").toMap());
+                setDataAsJson("{\"firstName\" : \"Shanti\", \"lastName\" : \"Sree\", \"address\":\"1200 E Hillsdale\", \"totalMarks\" : 480}").toMap());
         jedis.hmset(PUtil.dataInstanceDetailsKey("di5"), new DataInstance().setId("di4").setDsId("ds10").
-                setDataAsJson("{\"firstName\" : \"Suman\", \"lastName\" : \"Ganta\", \"address\":\"1200 E Hillsdale\", \"marks\" : 485}").toMap());
+                setDataAsJson("{\"firstName\" : \"Suman\", \"lastName\" : \"Ganta\", \"address\":\"1200 E Hillsdale\", \"totalMarks\" : 485}").toMap());
         jedis.hmset(PUtil.dataInstanceDetailsKey("di6"), new DataInstance().setId("di4").setDsId("ds10").
-                setDataAsJson("{\"firstName\" : \"Shanti\", \"lastName\" : \"Sree\", \"address\":\"1200 E Hillsdale\", \"marks\" : 480}").toMap());
+                setDataAsJson("{\"firstName\" : \"Shanti\", \"lastName\" : \"Sree\", \"address\":\"1200 E Hillsdale\", \"totalMarks\" : 480}").toMap());
         jedis.hmset(PUtil.dataInstanceDetailsKey("di7"), new DataInstance().setId("di4").setDsId("ds10").
-                setDataAsJson("{\"firstName\" : \"Suman\", \"lastName\" : \"Ganta\", \"address\":\"1200 E Hillsdale\", \"marks\" : 485}").toMap());
+                setDataAsJson("{\"firstName\" : \"Suman\", \"lastName\" : \"Ganta\", \"address\":\"1200 E Hillsdale\", \"totalMarks\" : 485}").toMap());
         jedis.hmset(PUtil.dataInstanceDetailsKey("di8"), new DataInstance().setId("di4").setDsId("ds10").
-                setDataAsJson("{\"firstName\" : \"Shanti\", \"lastName\" : \"Sree\", \"address\":\"1200 E Hillsdale\", \"marks\" : 480}").toMap());
+                setDataAsJson("{\"firstName\" : \"Shanti\", \"lastName\" : \"Sree\", \"address\":\"1200 E Hillsdale\", \"totalMarks\" : 480}").toMap());
         jedis.hmset(PUtil.dataInstanceDetailsKey("di9"), new DataInstance().setId("di4").setDsId("ds10").
-                setDataAsJson("{\"firstName\" : \"Suman\", \"lastName\" : \"Ganta\", \"address\":\"1200 E Hillsdale\", \"marks\" : 485}").toMap());
+                setDataAsJson("{\"firstName\" : \"Suman\", \"lastName\" : \"Ganta\", \"address\":\"1200 E Hillsdale\", \"totalMarks\" : 485}").toMap());
 
         //associate data instances with dataSets
         jedis.sadd(PUtil.dataSetInstancesKey("ds10"), "di1", "di2", "di3");
