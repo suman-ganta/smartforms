@@ -5,10 +5,7 @@ import org.smartforms.services.model.DataSet;
 import org.smartforms.services.model.ViewDef;
 import redis.clients.jedis.Jedis;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -41,7 +38,7 @@ public class DataDefinitionResource {
         List<DataSet> dataSets = new ArrayList<>();
         Set<String> datasetIds = jedis().smembers(PUtil.userDataSetsKey(getUserId()));
         for (String datasetId : datasetIds) {
-            Map<String, String> dsDetails = jedis().hgetAll(PUtil.dataSetDetailsKey(datasetId));
+            Map<String, String> dsDetails = jedis().hgetAll(PUtil.dataSetDetailsKey(Long.valueOf(datasetId)));
             dataSets.add(new DataSet(dsDetails));
         }
         if (!dataSets.isEmpty()) {
@@ -49,6 +46,18 @@ public class DataDefinitionResource {
         } else {
             return Response.status(Response.Status.NOT_FOUND).entity("No dataset definitions found").build();
         }
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addDataDefinition(DataSet dataSet) {
+        Long seq = jedis().incr(PUtil.dsKey());
+        dataSet.setId(seq);
+        jedis().hmset(PUtil.dataSetDetailsKey(seq), dataSet.toMap());
+        //associate the new one to the user
+        jedis().sadd(PUtil.userDataSetsKey(securityContext.getUserPrincipal().getName()), String.valueOf(seq));
+        return Response.ok(dataSet, MediaType.APPLICATION_JSON).build();
     }
 
     /**
@@ -61,9 +70,9 @@ public class DataDefinitionResource {
     public Response getDataDefintionByViewId(@PathParam("viewId") String viewId) {
         Set<String> datasetIds = jedis().smembers(PUtil.userDataSetsKey(getUserId()));
         for (String datasetId : datasetIds) {
-            Set<String> viewDefIds = jedis().smembers(PUtil.dataSetViewsKey(datasetId));
+            Set<String> viewDefIds = jedis().smembers(PUtil.dataSetViewsKey(Long.valueOf(datasetId)));
             if (viewDefIds.contains(viewId)) {
-                Map<String, String> dsDetails = jedis().hgetAll(PUtil.dataSetDetailsKey(datasetId));
+                Map<String, String> dsDetails = jedis().hgetAll(PUtil.dataSetDetailsKey(Long.valueOf(datasetId)));
                 return Response.ok(new DataSet(dsDetails), MediaType.APPLICATION_JSON).build();
             }
         }
@@ -80,16 +89,16 @@ public class DataDefinitionResource {
     public Response getViewDefs(@PathParam("datasetId") String dataSetId) {
         List<ViewDef> viewDefs = new ArrayList<>();
         if (jedis().sismember(PUtil.userDataSetsKey(getUserId()), dataSetId)) {
-            Set<String> viewDefIds = jedis().smembers(PUtil.dataSetViewsKey(dataSetId));
+            Set<String> viewDefIds = jedis().smembers(PUtil.dataSetViewsKey(Long.valueOf(dataSetId)));
             for (String viewDefId : viewDefIds) {
-                Map<String, String> viewDefDetails = jedis().hgetAll(PUtil.viewDetailsKey(viewDefId));
-                if(viewDefDetails != null && !viewDefDetails.isEmpty()) {
+                Map<String, String> viewDefDetails = jedis().hgetAll(PUtil.viewDetailsKey(Long.valueOf(viewDefId)));
+                if (viewDefDetails != null && !viewDefDetails.isEmpty()) {
                     viewDefs.add(new ViewDef(viewDefDetails));
                 }
             }
             if (!viewDefs.isEmpty()) {
                 return Response.ok(viewDefs, MediaType.APPLICATION_JSON).build();
-            }else{
+            } else {
                 return Response.status(Response.Status.NOT_FOUND).entity("No view definitions found").build();
             }
         } else {
@@ -104,19 +113,19 @@ public class DataDefinitionResource {
      */
     @GET
     @Path("{datasetId}/instances")
-    public Response getInstances(@PathParam("datasetId") String dataSetId) {
+    public Response getInstances(@PathParam("datasetId") Long dataSetId) {
         List<DataInstance> dataInstances = new ArrayList<>();
-        if (jedis().sismember(PUtil.userDataSetsKey(getUserId()), dataSetId)) {
+        if (jedis().sismember(PUtil.userDataSetsKey(getUserId()), String.valueOf(dataSetId))) {
             Set<String> diIds = jedis().smembers(PUtil.dataSetInstancesKey(dataSetId));
             for (String diId : diIds) {
-                Map<String, String> diDetails = jedis().hgetAll(PUtil.dataInstanceDetailsKey(diId));
-                if(diDetails != null && !diDetails.isEmpty()) {
+                Map<String, String> diDetails = jedis().hgetAll(PUtil.dataInstanceDetailsKey(Long.valueOf(diId)));
+                if (diDetails != null && !diDetails.isEmpty()) {
                     dataInstances.add(new DataInstance(diDetails));
                 }
             }
             if (!dataInstances.isEmpty()) {
                 return Response.ok(dataInstances, MediaType.APPLICATION_JSON).build();
-            }else{
+            } else {
                 return Response.status(Response.Status.NOT_FOUND).entity("No data instances found").build();
             }
         } else {
@@ -131,14 +140,14 @@ public class DataDefinitionResource {
      */
     @Path("views/{viewId}")
     @GET
-    public Response getViewDef(@PathParam("viewId") String viewDefId) {
+    public Response getViewDef(@PathParam("viewId") Long viewDefId) {
         try {
             Map<String, String> viewDefDetails = jedis().hgetAll(PUtil.viewDetailsKey(viewDefId));
             if (viewDefDetails != null) {
                 ViewDef viewDef = new ViewDef(viewDefDetails);
-                if (jedis().sismember(PUtil.userDataSetsKey(getUserId()), viewDef.getDsId())) {
+                if (jedis().sismember(PUtil.userDataSetsKey(getUserId()), String.valueOf(viewDef.getDsId()))) {
                     return Response.ok(viewDef, MediaType.APPLICATION_JSON).build();
-                }else {
+                } else {
                     return Response.status(Response.Status.FORBIDDEN).entity("Given viewDefId is not accessible").build();
                 }
             }else{
@@ -148,6 +157,19 @@ public class DataDefinitionResource {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getLocalizedMessage()).build();
         }
+    }
+
+    @Path("views")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addViewDef(ViewDef viewDef) {
+        Long seq = jedis().incr(PUtil.vdKey());
+        viewDef.setId(seq);
+        jedis().hmset(PUtil.viewDetailsKey(seq), viewDef.toMap());
+
+        jedis().sadd(PUtil.dataSetViewsKey(viewDef.getDsId()), String.valueOf(seq));
+        return Response.ok(viewDef, MediaType.APPLICATION_JSON).build();
     }
 
     public Jedis jedis(){

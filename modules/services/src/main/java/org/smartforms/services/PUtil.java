@@ -8,23 +8,35 @@ public class PUtil {
         return "user." + userId + ".datasets";
     }
 
-    public static String dataSetDetailsKey(String datasetId) {
+    public static String dataSetDetailsKey(Long datasetId) {
         return "ds." + datasetId + ".details";
     }
 
-    public static String dataSetViewsKey(String datasetId) {
+    public static String dataSetViewsKey(Long datasetId) {
         return "ds." + datasetId + ".viewDefs";
     }
 
-    public static String dataSetInstancesKey(String datasetId) {
+    public static String dataSetInstancesKey(Long datasetId) {
         return "ds." + datasetId + ".instances";
     }
 
-    public static String viewDetailsKey(String viewDefId) {
+    public static String viewDetailsKey(Long viewDefId) {
         return "viewDef." + viewDefId + ".details";
     }
 
-    public static String dataInstanceDetailsKey(String diId){
+    public static String dataInstanceDetailsKey(Long diId){
         return "di." + diId + ".details";
+    }
+
+    public static String diKey() {
+        return "diSeq";
+    }
+
+    public static String dsKey() {
+        return "dsSeq";
+    }
+
+    public static String vdKey() {
+        return "vdSeq";
     }
 }

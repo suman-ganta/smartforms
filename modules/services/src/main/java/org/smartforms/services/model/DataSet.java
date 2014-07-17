@@ -7,7 +7,7 @@ import java.util.Map;
  * DataSet metadata representation
  */
 public class DataSet {
-    private String id;
+    private Long id;
     private String name;
     private String description;
     private String dataFieldsJson;
@@ -21,11 +21,11 @@ public class DataSet {
         return this;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public DataSet setId(String id) {
+    public DataSet setId(Long id) {
         this.id = id;
         return this;
     }
@@ -49,7 +49,7 @@ public class DataSet {
     }
 
     public DataSet(Map<String, String> dsAsMap) {
-        this.id = dsAsMap.get("id");
+        this.id = Long.valueOf(dsAsMap.get("id"));
         this.name = dsAsMap.get("name");
         this.description = dsAsMap.get("description");
         this.dataFieldsJson = dsAsMap.get("dataFieldsJson");
@@ -61,7 +61,7 @@ public class DataSet {
 
     public Map<String, String> toMap() {
         Map<String, String> map = new HashMap();
-        map.put("id", id);
+        map.put("id", id.toString());
         map.put("name", name);
         map.put("description", description);
         map.put("dataFieldsJson", dataFieldsJson);

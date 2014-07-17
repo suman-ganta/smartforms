@@ -7,25 +7,25 @@ import java.util.Map;
  * View definition JSON object
  */
 public class ViewDef {
-    private String id;
-    private String dsId;
+    private Long id;
+    private Long dsId;
     private String title;
     private String viewDefJson;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public ViewDef setId(String id) {
+    public ViewDef setId(Long id) {
         this.id = id;
         return this;
     }
 
-    public String getDsId() {
+    public Long getDsId() {
         return dsId;
     }
 
-    public ViewDef setDsId(String dsId) {
+    public ViewDef setDsId(Long dsId) {
         this.dsId = dsId;
         return this;
     }
@@ -49,8 +49,8 @@ public class ViewDef {
     }
 
     public ViewDef(Map<String, String> viewDefAsMap) {
-        this.id = viewDefAsMap.get("id");
-        this.dsId = viewDefAsMap.get("dsId");
+        this.id = Long.valueOf(viewDefAsMap.get("id"));
+        this.dsId = Long.valueOf(viewDefAsMap.get("dsId"));
         this.title = viewDefAsMap.get("title");
         this.viewDefJson = viewDefAsMap.get("viewDefJson");
     }
@@ -61,8 +61,8 @@ public class ViewDef {
 
     public Map<String, String> toMap() {
         Map<String, String> map = new HashMap<>();
-        map.put("id", id);
-        map.put("dsId", dsId);
+        map.put("id", id.toString());
+        map.put("dsId", dsId.toString());
         map.put("title", title);
         map.put("viewDefJson", viewDefJson);
         return map;

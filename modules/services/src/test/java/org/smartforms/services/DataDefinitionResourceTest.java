@@ -13,12 +13,17 @@ import redis.clients.jedis.Jedis;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class DataDefinitionResourceTest {
 
@@ -49,98 +54,173 @@ public class DataDefinitionResourceTest {
     private void setupData() {
         Jedis jedis = new Jedis("localhost");
         //populate DataSets
-        jedis.hmset(PUtil.dataSetDetailsKey("ds10"), new DataSet().setId("ds10").setName("test1").setDescription("test desc").
+        List<Long> dsIds = new ArrayList<>();
+
+        Long seq = jedis.incr(PUtil.dsKey());
+        dsIds.add(seq);
+        jedis.hmset(PUtil.dataSetDetailsKey(seq), new DataSet().setId(seq).setName("test" + seq).setDescription("test desc").
                 setDataFieldsJson("{\"firstName\" : \"text\", \"lastName\" : \"text\", \"address\":\"text\", \"totalMarks\" : \"number\"}").toMap());
-        jedis.hmset(PUtil.dataSetDetailsKey("ds11"), new DataSet().setId("ds11").setName("test2").setDescription("test desc").
+
+        seq = jedis.incr(PUtil.dsKey());
+        dsIds.add(seq);
+        jedis.hmset(PUtil.dataSetDetailsKey(seq), new DataSet().setId(seq).setName("test" + seq).setDescription("test desc").
                 setDataFieldsJson("{\"firstName\" : \"text\", \"lastName\" : \"text\", \"address\":\"text\", \"totalMarks\" : \"number\"}").toMap());
-        jedis.hmset(PUtil.dataSetDetailsKey("ds12"), new DataSet().setId("ds12").setName("test3").setDescription("test desc").
+
+        seq = jedis.incr(PUtil.dsKey());
+        dsIds.add(seq);
+        jedis.hmset(PUtil.dataSetDetailsKey(seq), new DataSet().setId(seq).setName("test" + seq).setDescription("test desc").
                 setDataFieldsJson("{\"firstName\" : \"text\", \"lastName\" : \"text\", \"address\":\"text\", \"totalMarks\" : \"number\"}").toMap());
-        jedis.hmset(PUtil.dataSetDetailsKey("ds13"), new DataSet().setId("ds13").setName("test4").setDescription("test desc").
+
+        seq = jedis.incr(PUtil.dsKey());
+        dsIds.add(seq);
+        jedis.hmset(PUtil.dataSetDetailsKey(seq), new DataSet().setId(seq).setName("test" + seq).setDescription("test desc").
                 setDataFieldsJson("{\"firstName\" : \"text\", \"lastName\" : \"text\", \"address\":\"text\", \"totalMarks\" : \"number\"}").toMap());
-        jedis.hmset(PUtil.dataSetDetailsKey("ds14"), new DataSet().setId("ds14").setName("test5").setDescription("test desc").
+
+        seq = jedis.incr(PUtil.dsKey());
+        dsIds.add(seq);
+        jedis.hmset(PUtil.dataSetDetailsKey(seq), new DataSet().setId(seq).setName("test" + seq).setDescription("test desc").
                 setDataFieldsJson("{\"firstName\" : \"text\", \"lastName\" : \"text\", \"address\":\"text\", \"totalMarks\" : \"number\"}").toMap());
-        jedis.hmset(PUtil.dataSetDetailsKey("ds15"), new DataSet().setId("ds15").setName("test6").setDescription("test desc").
+
+        seq = jedis.incr(PUtil.dsKey());
+        dsIds.add(seq);
+        jedis.hmset(PUtil.dataSetDetailsKey(seq), new DataSet().setId(seq).setName("test" + seq).setDescription("test desc").
                 setDataFieldsJson("{\"firstName\" : \"text\", \"lastName\" : \"text\", \"address\":\"text\", \"totalMarks\" : \"number\"}").toMap());
 
         //associate datasets to users
-        jedis.sadd(PUtil.userDataSetsKey(VALID_USER), "ds10", "ds11", "ds12");
+        jedis.sadd(PUtil.userDataSetsKey(VALID_USER), String.valueOf(dsIds.get(0)), String.valueOf(dsIds.get(1)), String.valueOf(dsIds.get(2)));
 
         //populate view definitions
-        jedis.hmset(PUtil.viewDetailsKey("vd10"), new ViewDef().setDsId("ds10").setId("vd10").setTitle("MyView10").setViewDefJson("{\n" +
+        List<String> vdIds = new ArrayList<>();
+
+        seq = jedis.incr(PUtil.vdKey());
+        vdIds.add(seq.toString());
+        jedis.hmset(PUtil.viewDetailsKey(seq), new ViewDef().setDsId(Long.valueOf(dsIds.get(0))).setId(seq).setTitle("MyView" + seq).setViewDefJson("{\n" +
                 "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : true, \"visible\" : true},\n" +
                 "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"totalMarks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
                 "}").toMap());
-        jedis.hmset(PUtil.viewDetailsKey("vd11"), new ViewDef().setDsId("ds10").setId("vd11").setTitle("MyView11").setViewDefJson("{\n" +
+
+        seq = jedis.incr(PUtil.vdKey());
+        vdIds.add(seq.toString());
+        jedis.hmset(PUtil.viewDetailsKey(seq), new ViewDef().setDsId(Long.valueOf(dsIds.get(0))).setId(seq).setTitle("MyView" + seq).setViewDefJson("{\n" +
                 "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"totalMarks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
                 "}").toMap());
-        jedis.hmset(PUtil.viewDetailsKey("vd12"), new ViewDef().setDsId("ds10").setId("vd12").setTitle("MyView12").setViewDefJson("{\n" +
+
+        seq = jedis.incr(PUtil.vdKey());
+        vdIds.add(seq.toString());
+        jedis.hmset(PUtil.viewDetailsKey(seq), new ViewDef().setDsId(Long.valueOf(dsIds.get(0))).setId(seq).setTitle("MyView" + seq).setViewDefJson("{\n" +
                 "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"totalMarks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
                 "}").toMap());
-        jedis.hmset(PUtil.viewDetailsKey("vd13"), new ViewDef().setDsId("ds11").setId("vd13").setTitle("MyView13").setViewDefJson("{\n" +
+
+        seq = jedis.incr(PUtil.vdKey());
+        vdIds.add(seq.toString());
+        jedis.hmset(PUtil.viewDetailsKey(seq), new ViewDef().setDsId(Long.valueOf(dsIds.get(1))).setId(seq).setTitle("MyView" + seq).setViewDefJson("{\n" +
                 "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"totalMarks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
                 "}").toMap());
-        jedis.hmset(PUtil.viewDetailsKey("vd14"), new ViewDef().setDsId("ds11").setId("vd14").setTitle("MyView14").setViewDefJson("{\n" +
+
+        seq = jedis.incr(PUtil.vdKey());
+        vdIds.add(seq.toString());
+        jedis.hmset(PUtil.viewDetailsKey(seq), new ViewDef().setDsId(Long.valueOf(dsIds.get(1))).setId(seq).setTitle("MyView" + seq).setViewDefJson("{\n" +
                 "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"totalMarks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
                 "}").toMap());
-        jedis.hmset(PUtil.viewDetailsKey("vd15"), new ViewDef().setDsId("ds11").setId("vd15").setTitle("MyView15").setViewDefJson("{\n" +
+
+        seq = jedis.incr(PUtil.vdKey());
+        vdIds.add(seq.toString());
+        jedis.hmset(PUtil.viewDetailsKey(seq), new ViewDef().setDsId(Long.valueOf(dsIds.get(1))).setId(seq).setTitle("MyView" + seq).setViewDefJson("{\n" +
                 "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"totalMarks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
                 "}").toMap());
-        jedis.hmset(PUtil.viewDetailsKey("vd16"), new ViewDef().setDsId("ds12").setId("vd16").setTitle("MyView16").setViewDefJson("{\n" +
+
+        seq = jedis.incr(PUtil.vdKey());
+        vdIds.add(seq.toString());
+        jedis.hmset(PUtil.viewDetailsKey(seq), new ViewDef().setDsId(Long.valueOf(dsIds.get(2))).setId(seq).setTitle("MyView" + seq).setViewDefJson("{\n" +
                 "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"totalMarks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
                 "}").toMap());
-        jedis.hmset(PUtil.viewDetailsKey("vd17"), new ViewDef().setDsId("ds12").setId("vd17").setTitle("MyView17").setViewDefJson("{\n" +
+
+        seq = jedis.incr(PUtil.vdKey());
+        vdIds.add(seq.toString());
+        jedis.hmset(PUtil.viewDetailsKey(seq), new ViewDef().setDsId(Long.valueOf(dsIds.get(2))).setId(seq).setTitle("MyView" + seq).setViewDefJson("{\n" +
                 "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"totalMarks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
                 "}").toMap());
-        jedis.hmset(PUtil.viewDetailsKey("vd18"), new ViewDef().setDsId("ds12").setId("vd18").setTitle("MyView18").setViewDefJson("{\n" +
+
+        seq = jedis.incr(PUtil.vdKey());
+        vdIds.add(seq.toString());
+        jedis.hmset(PUtil.viewDetailsKey(seq), new ViewDef().setDsId(Long.valueOf(dsIds.get(2))).setId(seq).setTitle("MyView" + seq).setViewDefJson("{\n" +
                 "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
                 "\"totalMarks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
                 "}").toMap());
 
         //associate views to datasets
-        jedis.sadd(PUtil.dataSetViewsKey("ds10"), "vd10", "vd11", "vd12");
-        jedis.sadd(PUtil.dataSetViewsKey("ds11"), "vd13", "vd14", "vd15");
-        jedis.sadd(PUtil.dataSetViewsKey("ds12"), "vd16", "vd17", "vd18");
+        jedis.sadd(PUtil.dataSetViewsKey(dsIds.get(0)), vdIds.get(0), vdIds.get(1), vdIds.get(2));
+        jedis.sadd(PUtil.dataSetViewsKey(dsIds.get(1)), vdIds.get(3), vdIds.get(4), vdIds.get(5));
+        jedis.sadd(PUtil.dataSetViewsKey(dsIds.get(2)), vdIds.get(6), vdIds.get(7), vdIds.get(8));
 
         //populate data instances
-        jedis.hmset(PUtil.dataInstanceDetailsKey("di1"), new DataInstance().setId("di1").setDsId("ds10").
+        List<String> diIds = new ArrayList<>();
+
+        seq = jedis.incr(PUtil.diKey());
+        diIds.add(seq.toString());
+        jedis.hmset(PUtil.dataInstanceDetailsKey(seq), new DataInstance().setId(seq).setDsId(Long.valueOf(dsIds.get(0))).
                 setDataAsJson("{\"firstName\" : \"Suman\", \"lastName\" : \"Ganta\", \"address\":\"1200 E Hillsdale\", \"totalMarks\" : 485}").toMap());
-        jedis.hmset(PUtil.dataInstanceDetailsKey("di2"), new DataInstance().setId("di2").setDsId("ds10").
+
+        seq = jedis.incr(PUtil.diKey());
+        diIds.add(seq.toString());
+        jedis.hmset(PUtil.dataInstanceDetailsKey(seq), new DataInstance().setId(seq).setDsId(Long.valueOf(dsIds.get(0))).
                 setDataAsJson("{\"firstName\" : \"Shanti\", \"lastName\" : \"Sree\", \"address\":\"1200 E Hillsdale\", \"totalMarks\" : 480}").toMap());
-        jedis.hmset(PUtil.dataInstanceDetailsKey("di3"), new DataInstance().setId("di3").setDsId("ds10").
+
+        seq = jedis.incr(PUtil.diKey());
+        diIds.add(seq.toString());
+        jedis.hmset(PUtil.dataInstanceDetailsKey(seq), new DataInstance().setId(seq).setDsId(Long.valueOf(dsIds.get(0))).
                 setDataAsJson("{\"firstName\" : \"Suman\", \"lastName\" : \"Ganta\", \"address\":\"1200 E Hillsdale\", \"totalMarks\" : 485}").toMap());
-        jedis.hmset(PUtil.dataInstanceDetailsKey("di4"), new DataInstance().setId("di4").setDsId("ds10").
+
+        seq = jedis.incr(PUtil.diKey());
+        diIds.add(seq.toString());
+        jedis.hmset(PUtil.dataInstanceDetailsKey(seq), new DataInstance().setId(seq).setDsId(Long.valueOf(dsIds.get(0))).
                 setDataAsJson("{\"firstName\" : \"Shanti\", \"lastName\" : \"Sree\", \"address\":\"1200 E Hillsdale\", \"totalMarks\" : 480}").toMap());
-        jedis.hmset(PUtil.dataInstanceDetailsKey("di5"), new DataInstance().setId("di4").setDsId("ds10").
+
+        seq = jedis.incr(PUtil.diKey());
+        diIds.add(seq.toString());
+        jedis.hmset(PUtil.dataInstanceDetailsKey(seq), new DataInstance().setId(seq).setDsId(Long.valueOf(dsIds.get(0))).
                 setDataAsJson("{\"firstName\" : \"Suman\", \"lastName\" : \"Ganta\", \"address\":\"1200 E Hillsdale\", \"totalMarks\" : 485}").toMap());
-        jedis.hmset(PUtil.dataInstanceDetailsKey("di6"), new DataInstance().setId("di4").setDsId("ds10").
+
+        seq = jedis.incr(PUtil.diKey());
+        diIds.add(seq.toString());
+        jedis.hmset(PUtil.dataInstanceDetailsKey(seq), new DataInstance().setId(seq).setDsId(Long.valueOf(dsIds.get(0))).
                 setDataAsJson("{\"firstName\" : \"Shanti\", \"lastName\" : \"Sree\", \"address\":\"1200 E Hillsdale\", \"totalMarks\" : 480}").toMap());
-        jedis.hmset(PUtil.dataInstanceDetailsKey("di7"), new DataInstance().setId("di4").setDsId("ds10").
+
+        seq = jedis.incr(PUtil.diKey());
+        diIds.add(seq.toString());
+        jedis.hmset(PUtil.dataInstanceDetailsKey(seq), new DataInstance().setId(seq).setDsId(Long.valueOf(dsIds.get(0))).
                 setDataAsJson("{\"firstName\" : \"Suman\", \"lastName\" : \"Ganta\", \"address\":\"1200 E Hillsdale\", \"totalMarks\" : 485}").toMap());
-        jedis.hmset(PUtil.dataInstanceDetailsKey("di8"), new DataInstance().setId("di4").setDsId("ds10").
+
+        seq = jedis.incr(PUtil.diKey());
+        diIds.add(seq.toString());
+        jedis.hmset(PUtil.dataInstanceDetailsKey(seq), new DataInstance().setId(seq).setDsId(Long.valueOf(dsIds.get(0))).
                 setDataAsJson("{\"firstName\" : \"Shanti\", \"lastName\" : \"Sree\", \"address\":\"1200 E Hillsdale\", \"totalMarks\" : 480}").toMap());
-        jedis.hmset(PUtil.dataInstanceDetailsKey("di9"), new DataInstance().setId("di4").setDsId("ds10").
+
+        seq = jedis.incr(PUtil.diKey());
+        diIds.add(seq.toString());
+        jedis.hmset(PUtil.dataInstanceDetailsKey(seq), new DataInstance().setId(seq).setDsId(Long.valueOf(dsIds.get(0))).
                 setDataAsJson("{\"firstName\" : \"Suman\", \"lastName\" : \"Ganta\", \"address\":\"1200 E Hillsdale\", \"totalMarks\" : 485}").toMap());
 
         //associate data instances with dataSets
-        jedis.sadd(PUtil.dataSetInstancesKey("ds10"), "di1", "di2", "di3");
-        jedis.sadd(PUtil.dataSetInstancesKey("ds11"), "di4", "di5", "di6");
-        jedis.sadd(PUtil.dataSetInstancesKey("ds12"), "di7", "di8", "di9");
+        jedis.sadd(PUtil.dataSetInstancesKey(dsIds.get(0)), diIds.get(0), diIds.get(1), diIds.get(2));
+        jedis.sadd(PUtil.dataSetInstancesKey(dsIds.get(1)), diIds.get(3), diIds.get(4), diIds.get(5));
+        jedis.sadd(PUtil.dataSetInstancesKey(dsIds.get(2)), diIds.get(6), diIds.get(7), diIds.get(8));
     }
 
     private static Map<String, String> getAsMap(String... objects) {
@@ -166,7 +246,7 @@ public class DataDefinitionResourceTest {
     public void dataSetLookup() {
         DataSet[] datasets = target.path(DATADEFS).request().get(DataSet[].class);
         assertNotNull(datasets);
-        assertEquals(3, datasets.length);
+        assertTrue(datasets.length >= 3);
     }
 
     @Test
@@ -174,7 +254,7 @@ public class DataDefinitionResourceTest {
         DataSet[] datasets = target.path(DATADEFS).request().get(DataSet[].class);
         assertNotNull(datasets);
         ViewDef[] viewDefs = target.path(DATADEFS + "/" + datasets[0].getId() + "/views").request().get(ViewDef[].class);
-        assertEquals(3, viewDefs.length);
+        assertTrue(viewDefs.length >= 3);
         ViewDef viewDef = target.path(DATADEFS + "/views/" + viewDefs[0].getId()).request().get(ViewDef.class);
         assertNotNull(viewDef);
     }
@@ -186,5 +266,52 @@ public class DataDefinitionResourceTest {
         DataInstance[] dataInstances = target.path(DATADEFS + "/" + datasets[0].getId() + "/instances").request().get(DataInstance[].class);
         DataInstance dataInstance = target.path("instances/" + dataInstances[0].getId()).request().get(DataInstance.class);
         assertNotNull(dataInstance);
+    }
+
+    @Test
+    public void testDataSetCreation() {
+        DataSet[] datasets1 = target.path(DATADEFS).request().get(DataSet[].class);
+
+        DataSet ds = new DataSet().setName("testMe").setDescription("test desc").
+                setDataFieldsJson("{\"firstName\" : \"text\", \"lastName\" : \"text\", \"address\":\"text\", \"totalMarks\" : \"number\"}");
+        DataSet dataset = target.path(DATADEFS).request().post(Entity.entity(ds, MediaType.APPLICATION_JSON), DataSet.class);
+        assertNotNull(dataset.getId());
+
+        DataSet[] datasets2 = target.path(DATADEFS).request().get(DataSet[].class);
+
+        assertEquals(datasets1.length + 1, datasets2.length);
+    }
+
+    @Test
+    public void testViewDefCreation() {
+        DataSet[] datasets = target.path(DATADEFS).request().get(DataSet[].class);
+        assertNotNull(datasets);
+        ViewDef[] viewDefs = target.path(DATADEFS + "/" + datasets[0].getId() + "/views").request().get(ViewDef[].class);
+
+        ViewDef viewDef = new ViewDef().setDsId(datasets[0].getId()).setTitle("MyViewTest").setViewDefJson("{\n" +
+                "\"firstName\" : {\"label\" : \"First Name\", \"optionality\" : \"required\", \"mutable\" : true, \"visible\" : true},\n" +
+                "\"lastName\" : {\"label\" : \"Last Name\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true},\n" +
+                "\"totalMarks\" : {\"label\" : \"Marks\", \"optionality\" : \"required\", \"mutable\" : false, \"visible\" : true}\n" +
+                "}");
+        ViewDef viewDef1 = target.path(DATADEFS + "/views").request().post(Entity.entity(viewDef, MediaType.APPLICATION_JSON), ViewDef.class);
+        assertNotNull(viewDef1.getId());
+
+        ViewDef[] viewDefs2 = target.path(DATADEFS + "/" + datasets[0].getId() + "/views").request().get(ViewDef[].class);
+        assertEquals(viewDefs.length + 1, viewDefs2.length);
+    }
+
+    @Test
+    public void testDataInstanceCreation() {
+        DataSet[] datasets = target.path(DATADEFS).request().get(DataSet[].class);
+        assertNotNull(datasets);
+        DataInstance[] dataInstances = target.path(DATADEFS + "/" + datasets[0].getId() + "/instances").request().get(DataInstance[].class);
+
+        DataInstance dataInstance = new DataInstance().setDsId(datasets[0].getId()).
+                setDataAsJson("{\"firstName\" : \"Suman\", \"lastName\" : \"Ganta\", \"address\":\"1200 E Hillsdale\", \"totalMarks\" : 485}");
+
+        DataInstance dataInstance1 = target.path("instances").request().post(Entity.entity(dataInstance, MediaType.APPLICATION_JSON), DataInstance.class);
+        assertNotNull(dataInstance1.getId());
+        DataInstance[] dataInstances2 = target.path(DATADEFS + "/" + datasets[0].getId() + "/instances").request().get(DataInstance[].class);
+        assertEquals(dataInstances.length + 1, dataInstances2.length);
     }
 }

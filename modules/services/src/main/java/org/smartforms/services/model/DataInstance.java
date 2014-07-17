@@ -7,28 +7,28 @@ import java.util.Map;
  * Represents dataInstance model.
  */
 public class DataInstance {
-    private String dsId;
-    private String id;
+    private Long dsId;
+    private Long id;
     private String dataAsJson;
 
     public DataInstance() {
 
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public DataInstance setId(String id) {
+    public DataInstance setId(Long id) {
         this.id = id;
         return this;
     }
 
-    public String getDsId() {
+    public Long getDsId() {
         return dsId;
     }
 
-    public DataInstance setDsId(String dsId) {
+    public DataInstance setDsId(Long dsId) {
         this.dsId = dsId;
         return this;
     }
@@ -43,15 +43,15 @@ public class DataInstance {
     }
 
     public DataInstance(Map<String, String> diAsMap) {
-        this.id = (String) diAsMap.get("id");
-        this.dsId = (String) diAsMap.get("dsId");
+        this.id = Long.valueOf(diAsMap.get("id"));
+        this.dsId = Long.valueOf(diAsMap.get("dsId"));
         this.dataAsJson = (String) diAsMap.get("dataAsJson");
     }
 
     public Map<String, String> toMap() {
         Map<String, String> map = new HashMap<>();
-        map.put("id", id);
-        map.put("dsId", dsId);
+        map.put("id", String.valueOf(id));
+        map.put("dsId", dsId.toString());
         map.put("dataAsJson", dataAsJson);
         return map;
     }
