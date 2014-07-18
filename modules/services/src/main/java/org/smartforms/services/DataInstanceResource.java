@@ -1,6 +1,7 @@
 package org.smartforms.services;
 
 import org.smartforms.services.model.DataInstance;
+import org.smartforms.services.model.ViewDef;
 import redis.clients.jedis.Jedis;
 
 import javax.ws.rs.*;
@@ -8,7 +9,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * REST endpoint for data instance lookup
@@ -59,6 +63,37 @@ public class DataInstanceResource {
     public Response updateDataInstance(DataInstance dataInstance) {
         jedis().hmset(PUtil.dataInstanceDetailsKey(dataInstance.getId()), dataInstance.toMap());
         return Response.ok(dataInstance, MediaType.APPLICATION_JSON).build();
+    }
+
+    /**
+     * Searches data instances associated to a view definition
+     * @param viewDefId
+     * @param query
+     * @return
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findDataInstances(@QueryParam("viewDefId") Long viewDefId, @QueryParam("query") String query){
+        List<DataInstance> dataInstances = new ArrayList<>();
+
+        Map<String, String> viewDefDetails = jedis().hgetAll(PUtil.viewDetailsKey(viewDefId));
+        if (viewDefDetails != null) {
+            ViewDef viewDef = new ViewDef(viewDefDetails);
+            if (jedis().sismember(PUtil.userDataSetsKey(getUserId()), String.valueOf(viewDef.getDsId()))) {
+                Set<String> diIds = jedis().smembers(PUtil.dataSetInstancesKey(viewDef.getDsId()));
+                for (String diId : diIds) {
+                    Map<String, String> diDetails = jedis().hgetAll(PUtil.dataInstanceDetailsKey(Long.valueOf(diId)));
+                    DataInstance di = new DataInstance(diDetails);
+                    if (di.getDataAsJson().contains(query)) {
+                        dataInstances.add(di);
+                    }
+                }
+                if (!dataInstances.isEmpty()) {
+                    return Response.ok(dataInstances, MediaType.APPLICATION_JSON).build();
+                }
+            }
+        }
+        return Response.status(Response.Status.NOT_FOUND).entity("No data instances found").build();
     }
 
     public Jedis jedis(){

@@ -4,6 +4,8 @@ package org.smartforms.services;
  * Provides key names for the Redis Hashes and Sets
  */
 public class PUtil {
+    public static final String PUBUSER = "PUBLIC";
+
     public static String userDataSetsKey(String userId) {
         return "user." + userId + ".datasets";
     }

@@ -34,7 +34,10 @@ public class EmbeddedServer {
         HttpServer httpServer = GrizzlyHttpServerFactory.createHttpServer(URI.create(REST_BASE_URI), rc);
 
         //create static file handler to serve html app
-        httpServer.getServerConfiguration().addHttpHandler(new StaticHttpHandler("../web/app"), "/sf");
+        StaticHttpHandler httpHandler = new StaticHttpHandler("../web/app");
+        //disable cache to avoid server restarts during dev
+        httpHandler.setFileCacheEnabled(false);
+        httpServer.getServerConfiguration().addHttpHandler(httpHandler, "/sf");
         return httpServer;
     }
 

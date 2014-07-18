@@ -26,10 +26,17 @@ instanceRenderer.controller('instanceCtrl', ['$scope', '$http', 'viewDef', 'data
     console.log(viewDefTemplate);
     $scope.instanceTemplate = viewDefTemplate;
 
+    //attach instance to scope to submit it for update action
+    $scope.instance = instance.data;
+
     //this is model object, but dynamic-forms still mandates it to declare the object
     //(although regular model do not require it)
     $scope.formData = {};
     $scope.submitForm = function(){
-    	alert('Form submitted' + angular.toJson($scope.formData));
+    	$scope.instance.dataAsJson = JSON.stringify($scope.formData);
+    	$http.put('/rest/instances',$scope.instance)
+    	   .success(function(data){
+    	       alert('updated successfully!');
+    	   });
     }
 }]);

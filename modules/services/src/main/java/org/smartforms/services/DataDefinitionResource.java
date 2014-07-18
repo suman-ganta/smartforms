@@ -10,10 +10,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Dataset definitions lookup
@@ -48,6 +45,11 @@ public class DataDefinitionResource {
         }
     }
 
+    /**
+     * Create new dataset
+     * @param dataSet
+     * @return
+     */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -57,6 +59,10 @@ public class DataDefinitionResource {
         jedis().hmset(PUtil.dataSetDetailsKey(seq), dataSet.toMap());
         //associate the new one to the user
         jedis().sadd(PUtil.userDataSetsKey(securityContext.getUserPrincipal().getName()), String.valueOf(seq));
+        //Add public datasets to public set
+        if (dataSet.is_public()) {
+            jedis().sadd(PUtil.userDataSetsKey(PUtil.PUBUSER), String.valueOf(seq));
+        }
         return Response.ok(dataSet, MediaType.APPLICATION_JSON).build();
     }
 
@@ -159,6 +165,45 @@ public class DataDefinitionResource {
         }
     }
 
+    /**
+     * Search view definitions with given query string
+     * TODO: need to do offline indexing work for this
+     * @param query
+     * @return
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("views")
+    public Response findViewDefs(@QueryParam("query") String query) {
+        List<ViewDef> viewDefs = new ArrayList<>();
+        Set<String> datasetIds = jedis().smembers(PUtil.userDataSetsKey(getUserId()));
+        Set<String> pubDatasetIds = jedis().smembers(PUtil.userDataSetsKey(PUtil.PUBUSER));
+        Set<String> dsIds = new HashSet<>(datasetIds);
+        dsIds.addAll(pubDatasetIds);
+
+        for (String dsId : dsIds) {
+            Set<String> viewDefIds = jedis().smembers(PUtil.dataSetViewsKey(Long.valueOf(dsId)));
+            for (String viewDefId : viewDefIds) {
+                Map<String, String> viewDetails = jedis().hgetAll(PUtil.viewDetailsKey(Long.valueOf(viewDefId)));
+                ViewDef vd = new ViewDef(viewDetails);
+                if (vd.getTitle().contains(query)) {
+                    viewDefs.add(vd);
+                }
+            }
+        }
+
+        if (!viewDefs.isEmpty()) {
+            return Response.ok(viewDefs, MediaType.APPLICATION_JSON).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).entity("No view definitions found").build();
+        }
+    }
+
+    /**
+     * Add new view definition. This will be used by form designer in UI
+     * @param viewDef
+     * @return
+     */
     @Path("views")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -172,10 +217,18 @@ public class DataDefinitionResource {
         return Response.ok(viewDef, MediaType.APPLICATION_JSON).build();
     }
 
+    /**
+     * TODO use connection pool
+     * @return
+     */
     public Jedis jedis(){
         return new Jedis("localhost");
     }
 
+    /**
+     * Returns user id of logged in user
+     * @return
+     */
     private String getUserId(){
         return securityContext.getUserPrincipal().getName();
     }

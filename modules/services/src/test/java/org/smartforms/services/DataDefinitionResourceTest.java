@@ -314,4 +314,23 @@ public class DataDefinitionResourceTest {
         DataInstance[] dataInstances2 = target.path(DATADEFS + "/" + datasets[0].getId() + "/instances").request().get(DataInstance[].class);
         assertEquals(dataInstances.length + 1, dataInstances2.length);
     }
+
+    @Test
+    public void searchDataInstances(){
+        DataSet[] datasets = target.path(DATADEFS).request().get(DataSet[].class);
+        assertNotNull(datasets);
+        ViewDef[] viewDefs = target.path(DATADEFS + "/" + datasets[0].getId() + "/views").request().get(ViewDef[].class);
+        ViewDef viewDef = target.path(DATADEFS + "/views/" + viewDefs[0].getId()).request().get(ViewDef.class);
+        assertNotNull(viewDef);
+        DataInstance[] dataInstances = target.path("instances").
+                queryParam("query", "Suman").
+                queryParam("viewDefId", viewDef.getId()).request().get(DataInstance[].class);
+        assertTrue(dataInstances.length > 0);
+    }
+
+    @Test
+    public void findViewDefs() {
+        ViewDef[] viewDefs = target.path(DATADEFS).path("views").queryParam("query", "MyView").request().get(ViewDef[].class);
+        assertTrue(viewDefs.length > 0);
+    }
 }

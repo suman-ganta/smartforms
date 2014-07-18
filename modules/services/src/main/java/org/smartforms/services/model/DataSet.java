@@ -9,6 +9,7 @@ import java.util.Map;
 public class DataSet {
     private Long id;
     private String name;
+    private Boolean _public = Boolean.FALSE;
     private String description;
     private String dataFieldsJson;
 
@@ -19,6 +20,14 @@ public class DataSet {
     public DataSet setDataFieldsJson(String dataFieldsJson) {
         this.dataFieldsJson = dataFieldsJson;
         return this;
+    }
+
+    public boolean is_public() {
+        return _public;
+    }
+
+    public void set_public(boolean _public) {
+        this._public = _public;
     }
 
     public Long getId() {
@@ -53,6 +62,9 @@ public class DataSet {
         this.name = dsAsMap.get("name");
         this.description = dsAsMap.get("description");
         this.dataFieldsJson = dsAsMap.get("dataFieldsJson");
+        if(dsAsMap.get("public") != null){
+            this._public = Boolean.valueOf(dsAsMap.get("public"));
+        }
     }
 
     public DataSet(){
@@ -65,6 +77,9 @@ public class DataSet {
         map.put("name", name);
         map.put("description", description);
         map.put("dataFieldsJson", dataFieldsJson);
+        if (_public != null) {
+            map.put("public", _public.toString());
+        }
         return map;
     }
 }
