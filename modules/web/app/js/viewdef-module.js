@@ -1,6 +1,6 @@
 var formRenderer = angular.module('sfViewDefs', ['dynform']);
 
-formRenderer.controller('viewDefCtrl', ['$scope', '$http', 'viewDef', 'dataDef', function($scope, $http, viewDef, dataDef){
+formRenderer.controller('viewDefCtrl', ['$scope', '$http', '$location', 'viewDef', 'dataDef', function($scope, $http, $location, viewDef, dataDef){
     $scope.viewDefTemplate = JSON.parse(viewDef.data.viewDefJson);
     $scope.viewDefTitle = viewDef.data.title;
     var data = dataDef.data;
@@ -60,6 +60,13 @@ formRenderer.controller('viewDefCtrl', ['$scope', '$http', 'viewDef', 'dataDef',
          $scope.performSearch();
       }
     }
+
+    /**
+     * Opens a given URL
+     */
+    $scope.go = function ( path ) {
+      $location.path( path );
+    };
 }]);
 
 /**

@@ -1,7 +1,13 @@
 /*
 Top level module for the app
 */
-var smartFormsApp = angular.module('smartforms', ['sfViewDefs', 'sfDatasets', 'sfInstance', 'ngRoute']);
+var smartFormsApp = angular.module('smartforms', [
+     'sfViewDefs',
+     'sfViewSearch',
+     'sfDatasets',
+     'sfInstance',
+     'ngRoute'
+]);
 
 smartFormsApp.config(['$routeProvider',
   function($routeProvider) {
@@ -39,6 +45,10 @@ smartFormsApp.config(['$routeProvider',
             return $http.get('/rest/datadefs/view/' + $route.current.params.viewdefid);
           }
         }
+      }).
+      when('/search/:query', {
+        templateUrl: 'viewSearchResults.html',
+        controller: 'viewSearchCtrl'
       }).
       otherwise({
         redirectTo: '/home'

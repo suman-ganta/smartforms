@@ -1,7 +1,7 @@
 <div>
     <div class="row">
         <div class="input-group custom-search-form">
-            <input type="text" ng-model="instanceQuery" class="form-control" ng-keypress="handleKeyPress($event)" placeholder="Search...">
+            <input type="text" ng-model="instanceQuery" class="form-control" ng-keypress="handleKeyPress($event)" placeholder="Search in {{viewDefTitle}}...">
             <span class="input-group-btn">
             <button class="btn btn-default" type="button" ng-click="performSearch()">
                 <i class="fa fa-search"></i>
@@ -9,12 +9,15 @@
             </span>
         </div>
     </div>
-    <div class="col-md-12">
-        <ul>
-            <li ng-repeat="instance in searchResult">
-                <a ng-href="#/instances/{{instance.id}}/viewdef/{{viewDef.id}}">{{viewDef.title}} - {{instance.id}}</a>
-            </li>
-        </ul>
+    <span/>
+    <div class="row">
+        <div class="col-md-2" ng-repeat="instance in searchResult">
+            <div class="panel panel-default" >
+                <div class="panel-body">
+                    <a ng-href="#/instances/{{instance.id}}/viewdef/{{viewDef.id}}">{{viewDef.title}} - {{instance.id}}</a>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="row">
         <div class="col-lg-12">

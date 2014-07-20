@@ -186,7 +186,11 @@ public class DataDefinitionResource {
             for (String viewDefId : viewDefIds) {
                 Map<String, String> viewDetails = jedis().hgetAll(PUtil.viewDetailsKey(Long.valueOf(viewDefId)));
                 ViewDef vd = new ViewDef(viewDetails);
-                if (vd.getTitle().contains(query)) {
+                if(query != null && !query.isEmpty()) {
+                    if (vd.getTitle().toLowerCase().contains(query.toLowerCase())) {
+                        viewDefs.add(vd);
+                    }
+                }else{
                     viewDefs.add(vd);
                 }
             }
