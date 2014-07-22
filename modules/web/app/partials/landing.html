@@ -2,7 +2,8 @@
     <div class="col-md-2" ng-repeat="viewdef in viewDefs">
         <div class="panel panel-default" >
             <div class="panel-body">
-                <a ng-href="#/viewdef/{{viewdef.id}}">{{viewdef.title}}</a>
+                <img ng-src="{{viewdef.thumbnail}}" class="thumbnail">
+                <a ng-href="#/viewdef/{{viewdef.id}}/query/none">{{viewdef.title}}</a>
             </div>
         </div>
     </div>

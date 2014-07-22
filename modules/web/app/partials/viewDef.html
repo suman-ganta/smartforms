@@ -1,0 +1,12 @@
+<div>
+    <span/>
+    <div class="row">
+        <div class="col-md-2" ng-repeat="instance in searchResult">
+            <div class="panel panel-default" >
+                <div class="panel-body">
+                    <a ng-href="#/instances/{{instance.id}}/viewdef/{{viewDef.id}}">{{viewDef.title}} - {{instance.id}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

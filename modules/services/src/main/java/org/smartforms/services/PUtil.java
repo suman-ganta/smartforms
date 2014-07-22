@@ -7,7 +7,7 @@ public class PUtil {
     public static final String PUBUSER = "PUBLIC";
 
     public static String userDataSetsKey(String userId) {
-        return "user." + userId + ".datasets";
+        return "usr." + userId == null ? PUBUSER : userId + ".datasets";
     }
 
     public static String dataSetDetailsKey(Long datasetId) {
@@ -28,6 +28,10 @@ public class PUtil {
 
     public static String dataInstanceDetailsKey(Long diId){
         return "di." + diId + ".details";
+    }
+
+    public static String trendingViewsKey(){
+        return "views.trending";
     }
 
     public static String diKey() {

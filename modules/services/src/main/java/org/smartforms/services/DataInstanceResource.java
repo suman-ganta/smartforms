@@ -17,7 +17,7 @@ import java.util.Set;
 /**
  * REST endpoint for data instance lookup
  */
-@Path("/instances")
+@Path("instances")
 public class DataInstanceResource {
 
     @Context

@@ -27,17 +27,17 @@ public class EmbeddedServer {
         // in org.smartforms package
         //final ResourceConfig rc = new ResourceConfig().packages(Main.class.getPackage().getName());
         final ResourceConfig rc = new ResourceConfig().registerClasses(DataDefinitionResource.class,
-                DataInstanceResource.class, BasicAuthFilter.class, JacksonFeature.class);
+                DataInstanceResource.class, UserResource.class, BasicAuthFilter.class, JacksonFeature.class);
 
         // create and start a new instance of grizzly http server
         // exposing the Jersey application at REST_BASE_URI
         HttpServer httpServer = GrizzlyHttpServerFactory.createHttpServer(URI.create(REST_BASE_URI), rc);
 
         //create static file handler to serve html app
-        StaticHttpHandler httpHandler = new StaticHttpHandler("../web/app");
+        StaticHttpHandler staticHttpHandler = new StaticHttpHandler("../web/app");
         //disable cache to avoid server restarts during dev
-        httpHandler.setFileCacheEnabled(false);
-        httpServer.getServerConfiguration().addHttpHandler(httpHandler, "/sf");
+        staticHttpHandler.setFileCacheEnabled(false);
+        httpServer.getServerConfiguration().addHttpHandler(staticHttpHandler, "/sf");
         return httpServer;
     }
 

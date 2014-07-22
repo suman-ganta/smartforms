@@ -333,4 +333,10 @@ public class DataDefinitionResourceTest {
         ViewDef[] viewDefs = target.path(DATADEFS).path("views").queryParam("query", "MyView").request().get(ViewDef[].class);
         assertTrue(viewDefs.length > 0);
     }
+
+    @Test
+    public void examResultsUsecase(){
+        ExamResultsDataLoader examResultsDataLoader = new ExamResultsDataLoader();
+        examResultsDataLoader.upload();
+    }
 }

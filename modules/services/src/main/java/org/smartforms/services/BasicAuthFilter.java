@@ -16,11 +16,11 @@ import java.security.Principal;
  */
 @Provider
 public class BasicAuthFilter
-    implements ContainerRequestFilter
+        implements ContainerRequestFilter
 {
     private static final Response unauthorizedResponse =
-        Response.status(Response.Status.UNAUTHORIZED).header(HttpHeaders.WWW_AUTHENTICATE,
-                                                             "Basic realm=\"realm\"").build();
+            Response.status(Response.Status.UNAUTHORIZED).header(HttpHeaders.WWW_AUTHENTICATE,
+                    "Basic realm=\"realm\"").build();
 
     /**
      * the filter method
@@ -28,48 +28,79 @@ public class BasicAuthFilter
      * @throws java.io.IOException
      */
     @Override public void filter(ContainerRequestContext containerRequestContext)
-        throws IOException
-    {
-        // Get the authentication passed in HTTP headers parameters
-        String          authString = containerRequestContext.getHeaderString("authorization");
-        SecurityContext securityContext = containerRequestContext.getSecurityContext();
+            throws IOException {
 
-        if (authString == null && securityContext.getUserPrincipal() == null) {
-            containerRequestContext.abortWith(unauthorizedResponse);
+        try {
+            String user = getUserId(containerRequestContext);
+
+            if (isProtectedEndpoint(containerRequestContext)) {
+                if (user == null && containerRequestContext.getSecurityContext().getUserPrincipal() == null) {
+                    containerRequestContext.abortWith(unauthorizedResponse);
+                }else {
+                    setSecurityContext(containerRequestContext, user);
+                }
+            }else {
+                if (user != null) {
+                    setSecurityContext(containerRequestContext, user);
+                }
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
         }
-        else if (securityContext.getUserPrincipal() == null) {
+    }
+
+    private boolean isProtectedEndpoint(ContainerRequestContext context) {
+        boolean result = (context.getRequest().getMethod().equals("GET") && context.getUriInfo().getPath().equals("datadefs/views")) ||
+                (context.getRequest().getMethod().equals("GET") && context.getUriInfo().getPath().startsWith("datadefs/views/")) ||
+                (context.getRequest().getMethod().equals("GET") && context.getUriInfo().getPath().startsWith("datadefs"));
+        return !result;
+    }
+
+    private String getUserId(ContainerRequestContext context) throws IOException {
+        String user = null;
+        String authString = context.getHeaderString("authorization");
+        if(authString != null){
             authString = authString.replaceFirst("[Bb]asic ", "");
             BASE64Decoder decoder = new BASE64Decoder();
             byte[]        userColonPassBytes = decoder.decodeBuffer(authString);
             String        userColonPass = new String(userColonPassBytes);
 
             final String userId = userColonPass.substring(0, userColonPass.lastIndexOf(':'));
-            containerRequestContext.setSecurityContext(new SecurityContext() {
-                    @Override public Principal getUserPrincipal()
-                    {
-                        return new Principal() {
-                            @Override public String getName()
-                            {
-                                return userId;
-                            }
-                        };
-                    }
-
-                    @Override public boolean isUserInRole(String role)
-                    {
-                        return false;
-                    }
-
-                    @Override public boolean isSecure()
-                    {
-                        return false;
-                    }
-
-                    @Override public String getAuthenticationScheme()
-                    {
-                        return null;
-                    }
-                });
+            user = userId;
         }
+        return user;
+    }
+
+    private void setSecurityContext(ContainerRequestContext containerRequestContext, final String user) {
+        if (containerRequestContext.getSecurityContext().getUserPrincipal() != null) {
+            return;
+        }
+
+        containerRequestContext.setSecurityContext(new SecurityContext() {
+            @Override
+            public Principal getUserPrincipal() {
+                return new Principal() {
+                    @Override
+                    public String getName() {
+                        return user;
+                    }
+                };
+            }
+
+            @Override
+            public boolean isUserInRole(String role) {
+                return false;
+            }
+
+            @Override
+            public boolean isSecure() {
+                return false;
+            }
+
+            @Override
+            public String getAuthenticationScheme() {
+                return null;
+            }
+        });
     }
 }

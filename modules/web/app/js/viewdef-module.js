@@ -1,8 +1,14 @@
 var formRenderer = angular.module('sfViewDefs', ['dynform']);
 
-formRenderer.controller('viewDefCtrl', ['$scope', '$http', '$location', 'viewDef', 'dataDef', function($scope, $http, $location, viewDef, dataDef){
+formRenderer.controller('viewDefCtrl', ['$scope', '$rootScope', '$http', '$routeParams', 'viewDef', 'dataDef', function($scope, $rootScope, $http, $routeParams, viewDef, dataDef){
     $scope.viewDefTemplate = JSON.parse(viewDef.data.viewDefJson);
     $scope.viewDefTitle = viewDef.data.title;
+
+    //add to root scope so that this is accessible to searchbar
+    $rootScope.viewDef = viewDef.data;
+    $rootScope.query = 'view:' + viewDef.data.id;
+    $rootScope.searchPlaceHolder = 'Search in ' + viewDef.data.id;
+
     var data = dataDef.data;
     $scope.dataSetName = data.name;
     var typedef = JSON.parse(data.dataFieldsJson);
@@ -38,35 +44,13 @@ formRenderer.controller('viewDefCtrl', ['$scope', '$http', '$location', 'viewDef
 
     $scope.searchResult = {};
 
-    /**
-     * Search handler
-     */
-    $scope.performSearch = function(){
-        $http.get('/rest/instances?viewDefId=' + viewDef.data.id + '&query=' + $scope.instanceQuery).success(
-            function(instances){
-                $scope.searchResult = instances;
-            }
-        ).error(function(data, status, headers, config) {
-           alert('response code: ' + status);
-        });
-    }
-
-    /**
-     *Keyboard binding to launch search
-     */
-    $scope.handleKeyPress = function(ev) {
-      if (ev.which==13){
-         //console.log("about to perform search");
-         $scope.performSearch();
-      }
-    }
-
-    /**
-     * Opens a given URL
-     */
-    $scope.go = function ( path ) {
-      $location.path( path );
-    };
+    $http.get('/rest/instances?viewDefId=' + viewDef.data.id + '&query=' + $routeParams.instanceQuery).success(
+        function(instances){
+            $scope.searchResult = instances;
+        }
+    ).error(function(data, status, headers, config) {
+       //alert('response code: ' + status);
+    });
 }]);
 
 /**

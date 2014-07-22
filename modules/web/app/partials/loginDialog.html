@@ -1,0 +1,13 @@
+<div>
+    <div class="modal-header">
+        <h3 class="modal-title">Sign In</h3>
+    </div>
+    <div class="modal-body">
+        <label>User <input type="text" name="user" ng-model="loginModel['user']" class="ng-valid" autocomplete="off"></label><br/>
+        <label>Password <input type="password" name="password" ng-model="loginModel['password']" class="ng-valid" autocomplete="off"></label>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</div>

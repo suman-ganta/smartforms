@@ -22,12 +22,13 @@ public class DataSet {
         return this;
     }
 
-    public boolean is_public() {
+    public boolean isPublic() {
         return _public;
     }
 
-    public void set_public(boolean _public) {
+    public DataSet setPublic(boolean _public) {
         this._public = _public;
+        return this;
     }
 
     public Long getId() {

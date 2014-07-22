@@ -4,7 +4,7 @@ instanceRenderer.controller('instanceCtrl', ['$scope', '$http', 'viewDef', 'data
     instData = JSON.parse(instance.data.dataAsJson);
     viewDefTemplate = JSON.parse(viewDef.data.viewDefJson);
     var data = dataDef.data;
-    $scope.instanceTitle = 'Instance Rendered as ' + viewDef.data.title;
+    $scope.instanceTitle = viewDef.data.title;
     var typedef = JSON.parse(data.dataFieldsJson);
     var keys = Object.keys(typedef);
     var submitRequired = false;
