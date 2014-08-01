@@ -59,16 +59,21 @@
         width: 48%;
         padding: 1ex 1em;
       }
+
+      form > input[type="image"] {
+         width: 10%;
+         padding: 1ex 1em;
+      }
       
       label > input,
       label > select,
       label > textarea {
         float: right;
-              width: 60%;
+        width: 60%;
       }
       
       label div > label {
         display: block;
         padding: 1ex;
-              width: 100%;
+        width: 100%;
       }

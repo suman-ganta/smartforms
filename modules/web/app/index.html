@@ -15,6 +15,7 @@
     <!-- Load scripts at the end for performance. -->
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="js/angular-dynamic-forms/dynamic-forms.js"></script>
     <script src="js/viewdef-module.js"></script>
@@ -30,8 +31,8 @@
 </head>
 
 <body>
-    <div id="wrapper">
-        <nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="margin-bottom: 0" ng-controller="searchCtrl">
+    <div id="wrapper" ng-controller="searchCtrl">
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
                     <span class="sr-only">Toggle navigation</span>
@@ -40,22 +41,56 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="index.html">Smart Forms</a>
-                <div class="input-group custom-search-form navbar-search col-md-8" >
+                <div class="input-group custom-search-form navbar-search" >
                     <input type="text" class="form-control" ng-model="query" placeholder="{{searchPlaceHolder}}" ng-keypress="handleKeyPress($event)">
                     <span class="input-group-btn">
                         <button class="btn btn-primary" type="button" ng-click="performSearch()">
                             <i class="fa fa-search"></i>
                         </button>
                     </span>
-                    <div class="navbar-right">
+                    <div class="navbar-top-links navbar-right" ng-if="!signedin">
                         <button type="button" class="btn btn-link" ng-click="signin()">Sign In</button>
                     </div>
+
+                    <ul class="navbar-top-links navbar-right" ng-if="signedin">
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-user">
+                                <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                                </li>
+                                <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li><a href="#/home" ng-click="signout()"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                                </li>
+                            </ul>
+                            <!-- /.dropdown-user -->
+                        </li>
+                        <!-- /.dropdown -->
+                    </ul>
                 </div>
+            </div>
+
+            <!-- /.navbar-top-links -->
+
+            <div class="navbar-default navbar-static-side" role="navigation" ng-if="signedin">
+                <div class="sidebar-collapse">
+                    <ul class="nav" id="side-menu" ng-controller="dataSetsCtrl">
+                        <span></span>
+                        <li ng-repeat="dataset in datasets">
+                            <a ng-href="#/dataset/{{dataset.id}}"><i class="fa fa-bar-chart-o fa-fw"></i> {{dataset.name}}</a>
+                        </li>
+                    </ul>
+                    <!-- /#side-menu -->
+                </div>
+                <!-- /.sidebar-collapse -->
             </div>
 
         </nav>
 
-        <div id="page-wrapper-nosidebar">
+        <div ng-class="{ 'page-wrapper' : signedin, 'page-wrapper-nosidebar' : !signedin }">
             <span/>
             <div class="row">
                 <div ng-view></div>

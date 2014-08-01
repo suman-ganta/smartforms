@@ -45,4 +45,8 @@ public class PUtil {
     public static String vdKey() {
         return "vdSeq";
     }
+
+    public static String userSessionsKey() {
+        return "usr.sessions";
+    }
 }

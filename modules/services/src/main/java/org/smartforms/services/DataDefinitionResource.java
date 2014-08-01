@@ -141,32 +141,37 @@ public class DataDefinitionResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("views")
     public Response findViewDefs(@QueryParam("query") String query) {
-        List<ViewDef> viewDefs = new ArrayList<>();
-        Set<String> datasetIds = jedis().smembers(PUtil.userDataSetsKey(getUserId()));
-        Set<String> pubDatasetIds = jedis().smembers(PUtil.userDataSetsKey(PUtil.PUBUSER));
-        Set<String> dsIds = new HashSet<>(datasetIds);
-        dsIds.addAll(pubDatasetIds);
+        try {
+            List<ViewDef> viewDefs = new ArrayList<>();
+            Set<String> datasetIds = jedis().smembers(PUtil.userDataSetsKey(getUserId()));
+            Set<String> pubDatasetIds = jedis().smembers(PUtil.userDataSetsKey(PUtil.PUBUSER));
+            Set<String> dsIds = new HashSet<>(datasetIds);
+            dsIds.addAll(pubDatasetIds);
 
-        for (String dsId : dsIds) {
-            Set<String> viewDefIds = jedis().smembers(PUtil.dataSetViewsKey(Long.valueOf(dsId)));
-            for (String viewDefId : viewDefIds) {
-                Map<String, String> viewDetails = jedis().hgetAll(PUtil.viewDetailsKey(Long.valueOf(viewDefId)));
-                ViewDef vd = new ViewDef(viewDetails);
-                if(query != null && !query.isEmpty()) {
-                    if (vd.getTitle().toLowerCase().contains(query.toLowerCase())) {
+            for (String dsId : dsIds) {
+                Set<String> viewDefIds = jedis().smembers(PUtil.dataSetViewsKey(Long.valueOf(dsId)));
+                for (String viewDefId : viewDefIds) {
+                    Map<String, String> viewDetails = jedis().hgetAll(PUtil.viewDetailsKey(Long.valueOf(viewDefId)));
+                    ViewDef vd = new ViewDef(viewDetails);
+                    if(query != null && !query.isEmpty()) {
+                        if (vd.getTitle().toLowerCase().contains(query.toLowerCase())) {
+                            viewDefs.add(vd);
+                        }
+                    }else{
                         viewDefs.add(vd);
                     }
-                }else{
-                    viewDefs.add(vd);
                 }
             }
-        }
 
-        if (!viewDefs.isEmpty()) {
-            return Response.ok(viewDefs, MediaType.APPLICATION_JSON).build();
-        } else {
-            return Response.status(Response.Status.NOT_FOUND).entity("No view definitions found").build();
+            if (!viewDefs.isEmpty()) {
+                return Response.ok(viewDefs, MediaType.APPLICATION_JSON).build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).entity("No view definitions found").build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return Response.status(Response.Status.NOT_FOUND).entity("No view definitions found").build();
     }
 
     /**

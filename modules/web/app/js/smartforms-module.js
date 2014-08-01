@@ -1,15 +1,21 @@
-var searchResults = angular.module('sfViewSearch', ['ui.bootstrap']);
+var searchResults = angular.module('sfViewSearch', ['ui.bootstrap', 'ngCookies']);
 
 searchResults.controller('viewSearchCtrl', ['$scope', '$http', 'params', function($scope, $http, params){
     $http.get('/rest/datadefs/views?query=' + params.query).success(function(data){
         $scope.viewDefs = data;
     });
-
 }]);
 
-searchResults.controller('searchCtrl', ['$scope', '$location', '$modal', '$log', function($scope, $location, $modal, $log){
+searchResults.controller('searchCtrl', ['$scope', '$location', '$modal', '$log', 'Auth', function($scope, $location, $modal, $log, Auth){
 
-    $scope.searchPlaceHolder = 'Search Views';
+    if(typeof $scope.viewDef != 'undefined'){
+        $scope.searchPlaceHolder = 'Search ' + $scope.viewDef.id;
+    }else{
+        $scope.searchPlaceHolder = 'Search Views';
+    }
+
+    $log.info('Auth.user ' + Auth.user);
+    $scope.signedin = (typeof Auth.user != 'undefined');
 
     /**
      * Search handler
@@ -43,10 +49,15 @@ searchResults.controller('searchCtrl', ['$scope', '$location', '$modal', '$log',
 
        modalInstance.result.then(function (selectedItem) {
          $scope.selected = selectedItem;
+         $scope.signedin = true;
        }, function () {
          $log.info('Modal dismissed at: ' + new Date());
        });
     };
+
+    $scope.signout = function (){
+        $scope.signedin = false;
+    }
 }]);
 
 // Please note that $modalInstance represents a modal window (instance) dependency.
@@ -58,7 +69,7 @@ searchResults.controller('loginInstanceCtrl', ['$scope', '$modalInstance', '$htt
       $scope.ok = function () {
         //make rest call to login
         var encoded = Base64.encode($scope.loginModel.user + ':' + $scope.loginModel.password);
-        $http({method:'GET', url:'/rest/datadefs/views?query=Mark', headers:{'Authorization' : 'Basic ' + encoded}}).success(function(data){
+        $http({method:'GET', url:'/rest/users/login', headers:{'Authorization' : 'Basic ' + encoded}}).success(function(data){
             $modalInstance.close('outcome');
         });
       };
@@ -68,6 +79,31 @@ searchResults.controller('loginInstanceCtrl', ['$scope', '$modalInstance', '$htt
       };
   }
 ]);
+
+searchResults.factory('Auth', ['$cookieStore', function ($cookieStore) {
+    var _user;
+    return {
+        user : _user,
+        set: function (_user) {
+            // you can retrieve a user set by another page, like login successful page.
+            existing_cookie_user = $cookieStore.get('JSESSIONID');
+            _user =  _user || existing_cookie_user;
+            $cookieStore.put('JSESSIONID', _user);
+        },
+        remove: function () {
+            $cookieStore.remove('JSESSIONID', _user);
+        }
+    };
+}]);
+
+searchResults.run(['Auth', '$http', function run(Auth, $http) {
+    $http({method:'GET', url:'/rest/users/login'}).success(function(data){
+        Auth.set(data);
+    }).error(function(data){console.log('FAILED');});
+
+    //Auth.set({});
+}]);
+
 
 //Base64 service
 searchResults.factory('Base64', function() {

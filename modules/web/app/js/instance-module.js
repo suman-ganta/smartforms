@@ -11,7 +11,12 @@ instanceRenderer.controller('instanceCtrl', ['$scope', '$http', 'viewDef', 'data
     for(var i = 0; i < keys.length; ++i){
        if(viewDefTemplate.hasOwnProperty(keys[i])){
           viewDefTemplate[keys[i]]['type'] = typedef[keys[i]];
-          viewDefTemplate[keys[i]]['val'] = instData[keys[i]];
+          if(typedef[keys[i]] === 'image'){
+            viewDefTemplate[keys[i]]['source'] = instData[keys[i]];
+            viewDefTemplate[keys[i]]['class'] = 'thumbnail';
+          }else{
+            viewDefTemplate[keys[i]]['val'] = instData[keys[i]];
+          }
           viewDefTemplate[keys[i]]['readonly'] = !viewDefTemplate[keys[i]]['mutable'];
           viewDefTemplate[keys[i]]['required'] = viewDefTemplate[keys[i]]['optionality'] == 'required';
           submitRequired = submitRequired  || viewDefTemplate[keys[i]]['mutable'];
